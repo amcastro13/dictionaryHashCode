@@ -4,7 +4,7 @@ import java.util.Iterator;
 
 public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 
-	private int numOfEntries; // Number of entries in the hashTable
+	private int numOfEntries; // Number of pairs of entries in the hashTable
 	private Node<K,V>[] hashTable; // creates the hashTable array
 	private int hashTableSize; // The size of the hashTable
 	private final static int DEFAULT_CAPACITY = 5;
@@ -78,13 +78,17 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 	public DictionaryHashTable(int initialCapacity) {
 		//Node tableNode = new Node(key, value, flag);
 		//tableNode
-		hashTableSize = getNextPrime(nextPrimeNum);
+		hashTableSize = getNextPrime(initialCapacity);
 		@SuppressWarnings("unchecked")
 		Node<K, V>[] temp = (Node<K, V>[])new Node[hashTableSize]; // A temp variable that type casts the Node array into an array of size hashTableSize
 		hashTable = temp; // hashTable array is assigned to temp
 	}
 	
-	
+	/**
+	 * Method will accept an integer and find it's next prime number
+	 * @param nextPrime   A number that will become the next prime number
+	 * @return temp	      Temporary variable to return the next prime number
+	 */
 	 private int getNextPrime(int nextPrime) {
 		// TODO Auto-generated method stub
 		 boolean isPrime = false;
@@ -107,6 +111,11 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 		return temp;
 	}
 
+	 /**
+	  *  Method that will check to see if a current integer value is prime
+	  * @param nextPrime   An integer value that will be passed into the method
+	  * @return isPrime    A return type that will return false if the number is not prime, or true if the number is prime
+	  */
 	 private boolean isPrime(int nextPrime) {
 		 boolean isPrime = false;
 		 int i = 2;
@@ -127,19 +136,28 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 	@Override
 	public V add(K key, V value) {
 		// TODO Auto-generated method stub
-		boolean flagged = true;
-		getKeyIterator();
+		Node temporary;
+		int hash; // will store the value of the hash
+		int index; // will store the value of the hashTable index
+		boolean flagged = true; // will mark an index as flagged
 		
-		for(int i = 0; i < numOfEntries - 1; i++) {
-			
-			getValue()
+		if(key == null || value == null) {
+			throw new IllegalArgumentException();
+		}
+		else {
+			V oldValue;
 		}
 		
-		if(isEmpty() && !flagged) {
-			hashTable[getNextPrime(nextPrimeNum)] = new Node(key, value, flagged);	
-			numOfEntries++;
+		if(hashTableSize == numOfEntries) {	// condition stating if hash table is too full, then rehash
 			
+			for(int i = 0; i < getNextPrime(hashTableSize) - 1; i++) {
+				hash = hashTable[i].hashCode();
+				index = hash % getNextPrime(hashTableSize);
+				
+				
 			}
+			
+		}
 		
 		return null;
 	}
@@ -147,6 +165,10 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 	@Override
 	public V remove(K key) {
 		// TODO Auto-generated method stub
+		if(isEmpty()) {
+			
+			
+		}
 		return null;
 	}
 
@@ -187,12 +209,14 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 	@Override
 	public boolean isEmpty() {
 		// TODO Auto-generated method stub
+		
 		return false;
 	}
 
 	@Override
 	public int getSize() {
 		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 
