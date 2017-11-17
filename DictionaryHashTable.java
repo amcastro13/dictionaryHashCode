@@ -168,4 +168,84 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 		return removedvalue;
 	}
 
-	numOfEntries
+	@SuppressWarnings("unchecked")
+	@Override
+	public V getValue(K key) {
+		Iterator<K> itK=getKeyIterator();
+		Iterator<V> itV=getValueIterator();
+		int place=1;
+		V value=null;
+		if(itK.hasNext()) {
+			while(itK.next()!=key)
+				place++;
+			for(int i = 0; i < place; i++) 
+				value=itV.next();
+		}
+		return value;
+	}
+
+	@Override
+	public boolean contains(K key) {
+		boolean checker=false;
+		Iterator<K> it=getKeyIterator();
+		while(it.hasNext())
+			if(it.next()==key)
+				checker=true;
+		return checker;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<K> getKeyIterator() {
+		// TODO Auto-generated method stub
+		ArrayList<K> list=new ArrayList<K>(numOfEntries);
+		for(int i = 0; i < hashTableSize; i++) {
+			if(hashTable[i].getKey()!=null){
+				list.add(hashTable[i].getKey());
+			}
+		}
+		Iterator<K> it=list.iterator();
+		return it;
+	}
+
+	@Override
+	public Iterator<V> getValueIterator() {
+		ArrayList<V> list=new ArrayList<V>(numOfEntries);
+		for(int i = 0; i < hashTableSize; i++) {
+			if(hashTable[i].getValue()!=null){
+				list.add(hashTable[i].getValue());
+			}
+		}
+		Iterator<V> it=list.iterator();
+		return it;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		if(getSize()==0) {
+			return true;
+		}
+		else
+			return false;
+	}
+
+	@Override
+	public int getSize() {
+		int size=0;
+		for(int i = 0; i < hashTableSize; i++) {
+			if(hashTable[i].getKey()!=null){
+				size++;
+			}
+		}
+		return size;
+	}
+
+	@Override
+	public void clear() {
+		for(int i = 0; i < hashTableSize; i++) {
+			hashTable[i]=null;
+		}
+	}
+
+	
+}
