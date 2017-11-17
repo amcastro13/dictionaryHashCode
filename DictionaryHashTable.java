@@ -142,12 +142,30 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 			}
 		
 		return null;
-	}
-
+		
+	}private int getHashIndex(K key){
+	int hashIndex = key.hashCode() % hashTable.length;
+	if (hashIndex < 0)
+	hashIndex = hashIndex + hashTable.length;
+	return hashIndex;
+	} 
+	
+	
 	@Override
+	//removes item from the hash table
 	public V remove(K key) {
-		// TODO Auto-generated method stub
+		V removedvalue = null;
+		int index = getHashIndex(key);
+		if(index != -1) {
+			removedvalue = hashTable[index].getValue();
+		hashTable[index] = null;
+		numOfEntries--;
+		}
+		else {
+		System.out.print("the array is empty");
 		return null;
+		}
+		return removedvalue;
 	}
 
 	@SuppressWarnings("unchecked")
