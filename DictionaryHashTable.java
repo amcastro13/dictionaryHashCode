@@ -4,13 +4,12 @@ import java.util.Iterator;
 
 public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 
-	private int numOfEntries; // Number of entries in the hashTable
+	private int numOfEntries; // Number of pairs of entries in the hashTable
 	private Node<K,V>[] hashTable; // creates the hashTable array
 	private int hashTableSize; // The size of the hashTable
 	private final static int DEFAULT_CAPACITY = 5;
-	private int nextPrimeNum; // value of the next prime number
-	private Node node;
 	
+	@SuppressWarnings("hiding")
 	private class Node<K, V>{
 		
 		private K key;
@@ -78,13 +77,18 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 	public DictionaryHashTable(int initialCapacity) {
 		//Node tableNode = new Node(key, value, flag);
 		//tableNode
-		hashTableSize = getNextPrime(nextPrimeNum);
+		hashTableSize = getNextPrime(initialCapacity);
+		numOfEntries = getSize();
 		@SuppressWarnings("unchecked")
 		Node<K, V>[] temp = (Node<K, V>[])new Node[hashTableSize]; // A temp variable that type casts the Node array into an array of size hashTableSize
 		hashTable = temp; // hashTable array is assigned to temp
 	}
 	
-	
+	/**
+	 * Method will accept an integer and find it's next prime number
+	 * @param nextPrime   A number that will become the next prime number
+	 * @return temp	      Temporary variable to return the next prime number
+	 */
 	 private int getNextPrime(int nextPrime) {
 		// TODO Auto-generated method stub
 		 boolean isPrime = false;
@@ -107,6 +111,11 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 		return temp;
 	}
 
+	 /**
+	  *  Method that will check to see if a current integer value is prime
+	  * @param nextPrime   An integer value that will be passed into the method
+	  * @return isPrime    A return type that will return false if the number is not prime, or true if the number is prime
+	  */
 	 private boolean isPrime(int nextPrime) {
 		 boolean isPrime = false;
 		 int i = 2;
@@ -127,124 +136,108 @@ public class DictionaryHashTable<K, V> implements DictionaryInterface<K, V>{
 	@Override
 	public V add(K key, V value) {
 		// TODO Auto-generated method stub
-		boolean flagged = true;
-		getKeyIterator();
+		V temporary;
+		int hash; // will store the value of the hash
+		int index = numOfEntries; // will store the value of the hashTable index
+	    boolean unflagged = true; // will mark an index as flagged
 		
-		for(int i = 0; i < numOfEntries - 1; i++) {
+		if(hashTableSize == numOfEntries) {	// condition stating if hash table is too full, then rehash
 			
-			getValue()
+			for(int i = 0; i <= getNextPrime(hashTableSize) - 1; i++) {
+				temporary = hashTable[i].getValue();
+				hash = hashTable[i].hashCode();
+				index = hash % getNextPrime(hashTableSize);
+				
+				}
+			
 		}
 		
-		if(isEmpty() && !flagged) {
-			hashTable[getNextPrime(nextPrimeNum)] = new Node(key, value, flagged);	
+		if(hashTable[index].getFlag()) {
+			hashTable[index] = new Node(key, value, unflagged);
+			hashTable[index].setFlag(unflagged);
 			numOfEntries++;
 			
-			}
-		
-		return null;
-		
-	}private int getHashIndex(K key){
-	int hashIndex = key.hashCode() % hashTable.length;
-	if (hashIndex < 0)
-	hashIndex = hashIndex + hashTable.length;
-	return hashIndex;
-	} 
-	
-	
-	@Override
-	//removes item from the hash table
-	public V remove(K key) {
-		V removedvalue = null;
-		int index = getHashIndex(key);
-		if(index != -1) {
-			removedvalue = hashTable[index].getValue();
-		hashTable[index] = null;
-		numOfEntries--;
 		}
-		else {
-		System.out.print("the array is empty");
-		return null;
-		}
-		return removedvalue;
+		
+		return temporary;
 	}
+
+	private int getHashIndex(K key){
+	 	int hashIndex = key.hashCode() % hashTable.length;
+	 	if (hashIndex < 0)
+	 	hashIndex = hashIndex + hashTable.length;
+		return hashIndex;
+	 	} 
+	 	
+	 	
+	  	@Override
+	 	//removes item from the hash table
+	 public V remove(K key) {
+	 		// TODO Auto-generated method stub
+	 		V removedvalue = null;
+	 		int index = getHashIndex(key);
+			if(index != -1) {
+	 			removedvalue = hashTable[index].getValue();
+	 		hashTable[index] = null;
+	 		numOfEntries--;
+	 		}
+	 		else {
+	 		System.out.print("the array is empty");
+	  		return null;
+	 		}
+	 		return removedvalue;
+	  	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public V getValue(K key) {
-		Iterator<K> itK=getKeyIterator();
-		Iterator<V> itV=getValueIterator();
-		int place=1;
-		V value=null;
-		if(itK.hasNext()) {
-			while(itK.next()!=key)
-				place++;
-			for(int i = 0; i < place; i++) 
-				value=itV.next();
-		}
-		return value;
+		// TODO Auto-generated method stub
+		
+		getKeyIterator();
+		return null;
 	}
 
 	@Override
 	public boolean contains(K key) {
-		boolean checker=false;
-		Iterator<K> it=getKeyIterator();
-		while(it.hasNext())
-			if(it.next()==key)
-				checker=true;
-		return checker;
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public Iterator<K> getKeyIterator() {
 		// TODO Auto-generated method stub
-		ArrayList<K> list=new ArrayList<K>(numOfEntries);
-		for(int i = 0; i < hashTableSize; i++) {
-			if(hashTable[i].getKey()!=null){
-				list.add(hashTable[i].getKey());
-			}
+		
+		for(int i = 0; i < numOfEntries; i++) {
+			getValue(hashTable[i].getKey());
 		}
-		Iterator<K> it=list.iterator();
-		return it;
+		return null;
 	}
 
 	@Override
 	public Iterator<V> getValueIterator() {
-		ArrayList<V> list=new ArrayList<V>(numOfEntries);
-		for(int i = 0; i < hashTableSize; i++) {
-			if(hashTable[i].getValue()!=null){
-				list.add(hashTable[i].getValue());
-			}
-		}
-		Iterator<V> it=list.iterator();
-		return it;
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	@Override
 	public boolean isEmpty() {
-		if(getSize()==0) {
-			return true;
-		}
-		else
-			return false;
+		// TODO Auto-generated method stub
+		
+		return false;
 	}
 
 	@Override
 	public int getSize() {
-		int size=0;
-		for(int i = 0; i < hashTableSize; i++) {
-			if(hashTable[i].getKey()!=null){
-				size++;
-			}
-		}
-		return size;
+		// TODO Auto-generated method stub
+		
+		return 0;
 	}
 
 	@Override
 	public void clear() {
-		for(int i = 0; i < hashTableSize; i++) {
-			hashTable[i]=null;
-		}
+		// TODO Auto-generated method stub
+		
 	}
 
 	
